@@ -1,0 +1,24 @@
+{
+  "name": "laboria-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Laboria AI - Modern AI-powered career and job matching platform. Stop searching. Start matching.",
+  "scripts": {
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "build": "npm run build:client && npm run build:server"
+  },
+  "keywords": [
+    "job-matching",
+    "career-ai",
+    "laboria-ai",
+    "react",
+    "vite",
+    "typescript",
+    "express"
+  ],
+  "author": "Laboria AI Team",
+  "license": "MIT"
+}
