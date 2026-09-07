@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Database, Users, Sparkles, Rocket, Compass, Target, Award,
   Bot, Radar, FileText, MapPin, MessageSquareCode, Mic, Zap, Radio, Bell,
   Briefcase, BookOpen, FileCheck, FolderGit2, Building2, ArrowLeftRight,
   ShieldAlert, TrendingUp, Cpu, Activity, ShieldCheck, CheckCircle2,
-  DollarSign, Share2, Lock, X
+  DollarSign, Share2, Lock, X, ChevronDown, ChevronRight
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -88,6 +88,18 @@ const navGroups = [
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  // Keep the first category open by default
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    "Candidate Core": true
+  });
+
+  const toggleGroup = (category: string) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -125,34 +137,51 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Navigation Items */}
-        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
-          {navGroups.map((group) => (
-            <div key={group.category} className="space-y-1">
-              <div className="px-3 pb-2 text-[10px] font-semibold text-brand-400 uppercase tracking-wider font-mono">
-                {group.category}
+        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+          {navGroups.map((group) => {
+            const isExpanded = expandedGroups[group.category];
+            
+            return (
+              <div key={group.category} className="flex flex-col">
+                <button
+                  onClick={() => toggleGroup(group.category)}
+                  className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-semibold text-brand-400 uppercase tracking-wider font-mono hover:bg-gray-800/40 rounded-lg transition-colors text-left"
+                >
+                  <span>{group.category}</span>
+                  {isExpanded ? (
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
+                  ) : (
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-500" />
+                  )}
+                </button>
+                
+                {isExpanded && (
+                  <div className="space-y-1 mt-1 mb-2">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          onClick={onClose}
+                          className={({ isActive }) =>
+                            `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              isActive
+                                ? 'bg-gradient-to-r from-brand-600/30 to-brand-500/10 text-white border-l-4 border-brand-500 shadow-glow-sm'
+                                : 'text-gray-400 hover:text-white hover:bg-gray-800/60'
+                            }`
+                          }
+                        >
+                          <Icon className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">{item.name}</span>
+                        </NavLink>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    onClick={onClose}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        isActive
-                          ? 'bg-gradient-to-r from-brand-600/30 to-brand-500/10 text-white border-l-4 border-brand-500 shadow-glow-sm'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-800/60'
-                      }`
-                    }
-                  >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{item.name}</span>
-                  </NavLink>
-                );
-              })}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Footer Tag */}
