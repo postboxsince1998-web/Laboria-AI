@@ -4,11 +4,12 @@
   "private": true,
   "description": "Laboria AI - Modern AI-powered career and job matching platform. Stop searching. Start matching.",
   "scripts": {
+    "postinstall": "cd client && npm install",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
-    "build": "npm run build:client && npm run build:server"
+    "build": "npm run build:client"
   },
   "keywords": [
     "job-matching",
