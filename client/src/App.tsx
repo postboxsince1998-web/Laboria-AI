@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { mockCandidate } from './services/mockData';
+import { AuthService, UserSession } from './services/authService';
+import { AuthScreen } from './pages/AuthScreen';
+import { OnboardingScreen } from './pages/OnboardingScreen';
 import { CandidateProfile } from './types';
 
 // Module Pages
@@ -48,7 +51,25 @@ import { ClosedBetaDashboard } from './pages/ClosedBetaDashboard';
 import FinalLaunchCommandCenter from './pages/FinalLaunchCommandCenter';
 
 export const App: React.FC = () => {
-  const [candidate] = useState<CandidateProfile>(mockCandidate);
+  const [session, setSession] = useState<UserSession | null>(AuthService.getCurrentSession());
+  const [candidate, setCandidate] = useState<CandidateProfile | null>(AuthService.getCurrentProfile());
+
+  const handleLogin = () => {
+    setSession(AuthService.getCurrentSession());
+    setCandidate(AuthService.getCurrentProfile());
+  };
+
+  const handleOnboardingComplete = () => {
+    setCandidate(AuthService.getCurrentProfile());
+  };
+
+  if (!session) {
+    return <AuthScreen onLogin={handleLogin} />;
+  }
+
+  if (!candidate) {
+    return <OnboardingScreen session={session} onComplete={handleOnboardingComplete} />;
+  }
 
   return (
     <Router>
@@ -85,7 +106,6 @@ export const App: React.FC = () => {
           <Route path="/application-assistant" element={<AIJobApplicationAssistant candidate={candidate} />} />
           <Route path="/resume-builder" element={<AIResumeBuilder candidate={candidate} />} />
           <Route path="/learning" element={<LearningHub candidate={candidate} />} />
-
           <Route path="/applications" element={<ApplicationTracker candidate={candidate} />} />
           <Route path="/notifications" element={<NotificationCenter candidate={candidate} />} />
           <Route path="/job-watch" element={<AIJobWatch candidate={candidate} />} />
@@ -106,5 +126,5 @@ export const App: React.FC = () => {
   );
 };
 
-
 export default App;
+

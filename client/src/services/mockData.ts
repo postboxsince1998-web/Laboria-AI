@@ -1,78 +1,36 @@
 import { CandidateProfile, JobOpening, CareerPath, FutureSkillTrend, InterviewQuestion } from '../types';
+import { AuthService } from './authService';
 
-export const mockCandidate: CandidateProfile = {
-  id: 'cand_101',
-  fullName: 'Aarav Sharma',
-  email: 'aarav.sharma@example.com',
-  phone: '+91 98765 43210',
-  headline: 'Full Stack Software Engineer | React, Node.js, TypeScript & Cloud Architecture',
-  yearsOfExperience: 4,
-  currentLocation: {
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    country: 'India',
-    latitude: 12.9716,
-    longitude: 77.5946,
-  },
-  preferredLocations: ['Bengaluru', 'Hyderabad', 'Remote', 'Pune'],
-  preferredWorkType: 'Hybrid',
-  targetRoles: ['Senior Frontend Developer', 'Full Stack Engineer', 'Software Architect'],
-  skills: [
-    { name: 'React', level: 'Expert' },
-    { name: 'TypeScript', level: 'Advanced' },
-    { name: 'Node.js', level: 'Advanced' },
-    { name: 'Express', level: 'Advanced' },
-    { name: 'Tailwind CSS', level: 'Expert' },
-    { name: 'GraphQL', level: 'Intermediate' },
-    { name: 'PostgreSQL', level: 'Intermediate' },
-    { name: 'Docker', level: 'Intermediate' },
-    { name: 'AWS S3 / Lambda', level: 'Intermediate' },
-    { name: 'System Design', level: 'Intermediate' }
-  ],
-  education: [
-    {
-      degree: 'Bachelor of Technology (B.Tech)',
-      field: 'Computer Science and Engineering',
-      institution: 'National Institute of Technology, Surathkal',
-      year: 2022
-    }
-  ],
-  experience: [
-    {
-      id: 'exp_1',
-      company: 'TechNovation Labs',
-      role: 'Full Stack Engineer',
-      startDate: '2022-07',
-      endDate: 'Present',
-      description: 'Architected micro-frontend modules and optimized API throughput by 40%. Led a team of 3 junior devs.',
-      skillsUsed: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Docker']
-    },
-    {
-      id: 'exp_2',
-      company: 'InnoApp Cloud Solutions',
-      role: 'Frontend Developer',
-      startDate: '2020-06',
-      endDate: '2022-06',
-      description: 'Built high-throughput dashboard analytics components using React and Tailwind CSS.',
-      skillsUsed: ['React', 'JavaScript', 'CSS3', 'REST API']
-    }
-  ],
-  projects: [
-    {
-      name: 'Realtime Distributed Workflow Canvas',
-      description: 'Created a WebSockets-based visual automation flow builder handling 50k active events/sec.',
-      techStack: ['React', 'Node.js', 'Redis', 'Tailwind']
-    },
-    {
-      name: 'AI Resume Synthesizer',
-      description: 'Built a local NLP pipeline parsing resume PDFs and extracting candidate entities.',
-      techStack: ['TypeScript', 'Python', 'FastAPI']
-    }
-  ],
-  certifications: ['AWS Certified Solutions Architect – Associate', 'Meta Professional Frontend Developer'],
-  resumeText: `Aarav Sharma - Full Stack Engineer with 4 years of experience specializing in scalable web applications, React, Node.js, TypeScript, microservices, and system architecture. Proven track record of delivering SaaS applications in high-growth startup environments.`,
-  resumeFileName: 'Aarav_Sharma_FullStack_Resume.pdf'
+const emptyCandidate: CandidateProfile = {
+  id: '',
+  fullName: '',
+  email: '',
+  phone: '',
+  headline: '',
+  yearsOfExperience: 0,
+  currentLocation: { city: '', state: '', country: '', latitude: 0, longitude: 0 },
+  preferredLocations: [],
+  preferredWorkType: 'Remote',
+  targetRoles: [],
+  skills: [],
+  education: [],
+  experience: [],
+  projects: [],
+  technicalSkills: [],
+  softSkills: [],
+  certifications: [],
+  resumeText: ''
 };
+
+export const mockCandidate: CandidateProfile = new Proxy(emptyCandidate, {
+  get(target, prop) {
+    const activeProfile = AuthService.getCurrentProfile();
+    if (activeProfile && activeProfile[prop as keyof CandidateProfile] !== undefined) {
+      return activeProfile[prop as keyof CandidateProfile];
+    }
+    return target[prop as keyof CandidateProfile];
+  }
+});
 
 export const mockJobs: JobOpening[] = [
   {
@@ -266,3 +224,6 @@ export const mockInterviewQuestions: InterviewQuestion[] = [
     }
   }
 ];
+
+
+

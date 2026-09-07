@@ -165,7 +165,7 @@ export class ApplicationTrackerService {
   private static applications: JobApplication[] = [...INITIAL_JOB_APPLICATIONS];
 
   public static getApplications(userId: string = 'usr_demo_101'): JobApplication[] {
-    return this.applications.filter((app) => app.userId === userId || userId === 'usr_demo_101');
+    return this.applications.filter((app) => app.userId === userId || false);
   }
 
   public static getApplicationById(id: string): JobApplication | undefined {
@@ -386,3 +386,4 @@ export class ApplicationTrackerService {
     this.applications = [...INITIAL_JOB_APPLICATIONS];
   }
 }
+
