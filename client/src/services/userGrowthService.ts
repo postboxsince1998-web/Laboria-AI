@@ -18,7 +18,7 @@ export class UserGrowthService {
    */
   public static generateCandidateReferralLink(
     userId: string = 'usr_demo_101',
-    candidateName: string = 'Aarav Sharma'
+    candidateName: string = 'Candidate'
   ): CandidateReferralLink {
     const referrals = this.getCandidateReferralLinks();
     const existing = referrals.find(r => r.userId === userId);

@@ -8,6 +8,7 @@ import {
   CandidateProfile
 } from '../types';
 import { seedJobs } from '../data/seedData';
+import { AuthService } from './authService';
 
 const EMPLOYER_USER_KEY = 'laboria_employer_user';
 const COMPANY_PROFILE_KEY = 'laboria_employer_company';
@@ -411,10 +412,11 @@ export class EmployerPortalService {
     const idx = apps.findIndex((a) => a.applicationId === applicationId);
     if (idx === -1) throw new Error('Application not found');
 
+    const active = AuthService.getCurrentProfile();
     apps[idx].hasConsentedPrivacy = true;
-    apps[idx].candidateName = 'Aarav Sharma';
-    apps[idx].maskedEmail = 'aarav.sharma@laboria.ai';
-    apps[idx].maskedPhone = '+91 98765 43210';
+    apps[idx].candidateName = active?.fullName || 'Candidate Name';
+    apps[idx].maskedEmail = active?.email || 'candidate@laboria.ai';
+    apps[idx].maskedPhone = active?.phone || '+91 90000 00000';
     SavedEmployerPortalService.saveApplications(apps);
     return apps[idx];
   }

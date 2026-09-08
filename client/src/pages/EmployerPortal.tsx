@@ -52,7 +52,7 @@ interface EmployerPortalProps {
 
 type TabType = 'overview' | 'jobs' | 'candidates' | 'applications' | 'company';
 
-export const EmployerPortal: React.FC<EmployerPortalProps> = () => {
+export const EmployerPortal: React.FC<EmployerPortalProps> = ({ candidate }) => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<EmployerUser>(() => EmployerPortalService.getCurrentUser());
   const [company, setCompany] = useState<CompanyProfile>(() => EmployerPortalService.getCompanyProfile());
@@ -213,9 +213,9 @@ export const EmployerPortal: React.FC<EmployerPortalProps> = () => {
       setSelectedAppForModal({
         ...selectedAppForModal,
         hasConsentedPrivacy: true,
-        candidateName: 'Aarav Sharma',
-        maskedEmail: 'aarav.sharma@laboria.ai',
-        maskedPhone: '+91 98765 43210'
+        candidateName: candidate?.fullName || 'Candidate Name',
+        maskedEmail: candidate?.email || 'candidate@laboria.ai',
+        maskedPhone: candidate?.phone || '+91 90000 00000'
       });
     }
   };

@@ -83,7 +83,7 @@ export class SoftSkillsCoachService {
         duration: '15 Mins',
         objective: 'Formulate a crisp 2-minute introduction covering your background, core strengths, and target role goals.',
         guidedPrompt: 'Draft an intro stating: 1) Who you are, 2) Your top 2 technical strengths, 3) Key project metric, 4) Target role focus.',
-        sampleModelAnswer: '"Hi, I am Aarav, a Full Stack Engineer with 4 years experience specializing in React and Node.js microservices. Recently at TechNovation Labs, I architected a WebSockets flow builder handling 50k events/sec. I am looking to bring my systems expertise to a Senior Full Stack role in Bengaluru."'
+        sampleModelAnswer: '"Hi, I am a Software Professional specializing in web applications and data systems. Recently, I built high-performance APIs reducing latency by 40%. I am looking to bring my technical expertise to a high-growth engineering role."'
       },
       {
         id: 'ex_2',

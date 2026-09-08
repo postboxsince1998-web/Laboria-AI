@@ -214,8 +214,8 @@ export class TwoSidedMatchingService {
       return {
         matchId,
         candidateId: candidate.id,
-        candidateName: candidate.fullName || 'Aarav Sharma',
-        candidateHeadline: candidate.headline || 'Senior Full Stack Engineer',
+        candidateName: candidate.fullName || 'Candidate',
+        candidateHeadline: candidate.headline || 'Software Professional',
         jobId: job.id,
         jobTitle: job.title,
         companyName: job.company || 'TechPartner Solutions',
