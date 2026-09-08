@@ -186,16 +186,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer Tag */}
-        <div className="p-4 border-t border-gray-800/80 bg-gray-950/40">
-          <div className="p-3 rounded-lg bg-gray-900/60 border border-gray-800 text-xs mb-3">
+        <div className="p-4 border-t border-gray-800/80 bg-gray-950/40 space-y-2">
+          <div className="p-2.5 rounded-lg bg-gray-900/60 border border-gray-800 text-xs">
             <p className="text-gray-300 font-semibold mb-0.5">Matching Principle</p>
             <p className="text-gray-400 text-[11px] leading-relaxed">
               Profile Relevance (60%) &gt; Distance (20%). Skills shine over proximity.
             </p>
           </div>
-          <button onClick={() => { AuthService.logout(); window.location.reload(); }} className="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs rounded-lg font-medium transition-colors border border-red-500/20">
-            Sign Out Securely
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => AuthService.switchAccount()}
+              className="w-full py-2 px-2 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 text-xs rounded-lg font-medium transition-colors border border-brand-500/20 flex items-center justify-center gap-1"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+              <span>Switch</span>
+            </button>
+            <button
+              onClick={() => AuthService.logout()}
+              className="w-full py-2 px-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs rounded-lg font-medium transition-colors border border-red-500/20 flex items-center justify-center gap-1"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       </aside>
     </>

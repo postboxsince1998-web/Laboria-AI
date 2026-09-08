@@ -130,11 +130,23 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <button onClick={() => handleDemo('a')} disabled={isLoading} className="w-full inline-flex justify-center py-2 px-4 border border-gray-700 rounded-lg shadow-sm bg-gray-800/50 text-sm font-medium text-gray-300 hover:bg-gray-700">
-                Login as User A
+              <button
+                type="button"
+                onClick={() => handleDemo('a')}
+                disabled={isLoading}
+                className="w-full inline-flex flex-col items-center justify-center py-2 px-3 border border-brand-500/30 rounded-lg shadow-sm bg-brand-500/10 hover:bg-brand-500/20 text-xs font-medium text-brand-300 transition-colors"
+              >
+                <span className="font-semibold text-white">QA User A</span>
+                <span className="text-[10px] text-gray-400">Data Analyst • Coimbatore</span>
               </button>
-              <button onClick={() => handleDemo('b')} disabled={isLoading} className="w-full inline-flex justify-center py-2 px-4 border border-gray-700 rounded-lg shadow-sm bg-gray-800/50 text-sm font-medium text-gray-300 hover:bg-gray-700">
-                Login as User B
+              <button
+                type="button"
+                onClick={() => handleDemo('b')}
+                disabled={isLoading}
+                className="w-full inline-flex flex-col items-center justify-center py-2 px-3 border border-teal-500/30 rounded-lg shadow-sm bg-teal-500/10 hover:bg-teal-500/20 text-xs font-medium text-teal-300 transition-colors"
+              >
+                <span className="font-semibold text-white">QA User B</span>
+                <span className="text-[10px] text-gray-400">MERN Dev • Bangalore</span>
               </button>
             </div>
           </div>
