@@ -7,6 +7,7 @@ import { ProgressBar } from '../components/ui/ProgressBar';
 import { Modal } from '../components/ui/Modal';
 import { CandidateProfile } from '../types';
 import { seedJobs } from '../data/seedData';
+import { AuthService } from '../services/authService';
 import {
   ResumeParserService,
   ExtractedCandidateProfile,
@@ -65,8 +66,8 @@ export const ResumeOpportunity: React.FC<ResumeOpportunityProps> = ({
   };
 
   // Step 1: Parsing & Extraction State
-  const [fileName, setFileName] = useState<string>('Aarav_Sharma_Resume.pdf');
-  const [rawText, setRawText] = useState<string>(candidate.resumeText);
+  const [fileName, setFileName] = useState<string>(() => candidate.resumeFileName || (candidate.fullName ? `${candidate.fullName.replace(/\s+/g, '_')}_Resume.pdf` : 'Uploaded_Resume.pdf'));
+  const [rawText, setRawText] = useState<string>(candidate.resumeText || '');
   const [isExtracting, setIsExtracting] = useState<boolean>(false);
   const [parsingProgress, setParsingProgress] = useState<ParsingProgressStep | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -74,7 +75,7 @@ export const ResumeOpportunity: React.FC<ResumeOpportunityProps> = ({
 
   // Step 2: Extracted Candidate Profile State
   const [profile, setProfile] = useState<ExtractedCandidateProfile>(() =>
-    ResumeParserService.parseResumeText(candidate.resumeText, 'Aarav_Sharma_Resume.pdf')
+    ResumeParserService.parseResumeText(candidate.resumeText || '', fileName)
   );
 
   // Interactive Editing State
@@ -141,6 +142,18 @@ export const ResumeOpportunity: React.FC<ResumeOpportunityProps> = ({
       setEditDegree(parsed.degree);
       setEditYOE(parsed.experienceYears);
 
+      // Persist resume to authenticated user private profile
+      const updatedCandidate: CandidateProfile = {
+        ...candidate,
+        resumeFileName: file.name,
+        resumeText: parsed.rawText,
+        yearsOfExperience: parsed.experienceYears || candidate.yearsOfExperience,
+        technicalSkills: Array.from(new Set([...candidate.technicalSkills, ...parsed.technicalSkills])),
+        softSkills: Array.from(new Set([...candidate.softSkills, ...parsed.softSkills])),
+        skills: Array.from(new Set([...candidate.skills.map(s => s.name), ...parsed.technicalSkills])).map(s => ({ name: s, level: 'Intermediate' }))
+      };
+      AuthService.saveProfile(updatedCandidate);
+
       computeMatches(parsed);
     } catch (err: any) {
       setUploadError(err.message || 'Error processing resume document.');
@@ -188,6 +201,19 @@ export const ResumeOpportunity: React.FC<ResumeOpportunityProps> = ({
 
     setProfile(updated);
     setIsEditingProfile(false);
+
+    // Persist profile edits to authenticated user private profile
+    const updatedCandidate: CandidateProfile = {
+      ...candidate,
+      yearsOfExperience: Number(editYOE) || candidate.yearsOfExperience,
+      technicalSkills: editTechSkills.split(',').map((s) => s.trim()).filter(Boolean),
+      softSkills: editSoftSkills.split(',').map((s) => s.trim()).filter(Boolean),
+      currentLocation: { ...candidate.currentLocation, city: editLocationCity.trim() },
+      targetRoles: editPreferredRoles.split(',').map((s) => s.trim()).filter(Boolean),
+      skills: editTechSkills.split(',').map((s) => s.trim()).filter(Boolean).map(s => ({ name: s, level: 'Intermediate' }))
+    };
+    AuthService.saveProfile(updatedCandidate);
+
     computeMatches(updated);
   };
 

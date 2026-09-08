@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { mockCandidate } from './services/mockData';
@@ -53,6 +53,16 @@ import FinalLaunchCommandCenter from './pages/FinalLaunchCommandCenter';
 export const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(AuthService.getCurrentSession());
   const [candidate, setCandidate] = useState<CandidateProfile | null>(AuthService.getCurrentProfile());
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setCandidate(AuthService.getCurrentProfile());
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('laboria_profile_update', handleProfileUpdate);
+      return () => window.removeEventListener('laboria_profile_update', handleProfileUpdate);
+    }
+  }, []);
 
   const handleLogin = () => {
     setSession(AuthService.getCurrentSession());

@@ -104,6 +104,10 @@ export class AuthService {
     const profiles = JSON.parse(localStorage.getItem(this.PROFILES_KEY) || '{}');
     profiles[session.id] = { ...profile, id: session.id }; // Enforce user ownership
     localStorage.setItem(this.PROFILES_KEY, JSON.stringify(profiles));
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('laboria_profile_update', { detail: profiles[session.id] }));
+    }
   }
 
   // Seed isolated QA Test Accounts strictly according to Part 9 & Part 40 specifications

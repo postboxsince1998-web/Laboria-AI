@@ -5,6 +5,7 @@ import { Badge } from '../components/ui/Badge';
 import { Modal } from '../components/ui/Modal';
 import { CandidateProfile, JobOpening, ResumeAnalysisReport, ResumeVersion, JobTailoringAnalysis } from '../types';
 import { seedJobs } from '../data/seedData';
+import { AuthService } from '../services/authService';
 import {
   analyzeResume,
   enhanceExperienceBullet,
@@ -95,6 +96,16 @@ export const AIResumeBuilder: React.FC<AIResumeBuilderProps> = ({ candidate }) =
   const handleSaveCurrentVersion = () => {
     const updated = SavedResumeVersionService.saveVersion(activeVersion, candidate);
     setVersions(updated);
+    
+    // Persist active version to user profile
+    const updatedCandidate: CandidateProfile = {
+      ...candidate,
+      resumeFileName: activeVersion.versionName,
+      headline: activeVersion.targetRole ? `${activeVersion.targetRole} | ${activeVersion.skills.map(s => s.name).slice(0, 3).join(', ')}` : candidate.headline,
+      technicalSkills: activeVersion.skills.map(s => s.name),
+      skills: activeVersion.skills
+    };
+    AuthService.saveProfile(updatedCandidate);
   };
 
   const handleSwitchVersion = (version: ResumeVersion) => {
@@ -140,11 +151,33 @@ export const AIResumeBuilder: React.FC<AIResumeBuilderProps> = ({ candidate }) =
       const updated = SavedResumeVersionService.saveVersion(imported, candidate);
       setVersions(updated);
       setActiveVersion(imported);
+      
+      const updatedCandidate: CandidateProfile = {
+        ...candidate,
+        resumeText: importText,
+        resumeFileName: importName || 'Imported_Resume.pdf',
+        technicalSkills: imported.skills.map(s => s.name),
+        skills: imported.skills
+      };
+      AuthService.saveProfile(updatedCandidate);
+
       setIsImporting(false);
       setImportText('');
       setImportName('');
       setActiveTab('editor');
     }, 600);
+  };
+
+  const handleImportFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportName(file.name);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = (event.target?.result as string) || '';
+      setImportText(text || `Uploaded Document: ${file.name}`);
+    };
+    reader.readAsText(file);
   };
 
   // Handlers for AI Summary Generator
@@ -614,6 +647,23 @@ export const AIResumeBuilder: React.FC<AIResumeBuilderProps> = ({ candidate }) =
               <p className="text-gray-400 mt-1">
                 Paste your resume text below to parse skills, experience, and education into a new structured version.
               </p>
+            </div>
+
+            <div className="p-4 border-2 border-dashed border-gray-800 hover:border-brand-500/50 rounded-xl bg-gray-950/60 text-center space-y-2">
+              <Upload className="w-8 h-8 text-brand-400 mx-auto" />
+              <p className="font-semibold text-white">Upload Resume File from Computer</p>
+              <p className="text-[11px] text-gray-400">Supports PDF, DOC, DOCX, TXT documents</p>
+              <label className="inline-block cursor-pointer">
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt"
+                  onChange={handleImportFileUpload}
+                  className="hidden"
+                />
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition shadow-glow-sm">
+                  Select Resume Document
+                </span>
+              </label>
             </div>
 
             <div>
